@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	testAddress = "app1.inv.toolsash1.cloudsys.tmcs:8080"
-	testDC      = "toolsash1"
+	testAddress = "localhost:8080"
+	testDC      = "dc1"
 	testCfgKey  = "metrilyx/annotations"
 )
 
