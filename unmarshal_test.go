@@ -1,13 +1,12 @@
 package consulutils
 
 import (
-	"github.com/hashicorp/consul/api"
 	"testing"
 )
 
 var (
-	testAddress = "localhost:8080"
-	testDC      = "dc1"
+	testAddress = "app1.inv.toolsash1.cloudsys.tmcs:8080"
+	testDC      = "toolsash1"
 	testCfgKey  = "metrilyx/annotations"
 )
 
@@ -20,18 +19,12 @@ type TestConsulConfig struct {
 
 func Test_Unmarshal(t *testing.T) {
 
-	cfg := api.DefaultConfig()
-	cfg.Address = testAddress
-	cfg.Datacenter = testDC
-
-	client, err := api.NewClient(cfg)
+	client, err := NewConsulClient(testAddress, testDC)
 	if err != nil {
 		t.Fatalf("%s\n", err)
 	}
 
-	kv := client.KV()
-
-	pairs, _, err := kv.List(testCfgKey, nil)
+	pairs, err := GetKVTree(client, "metrilyx/annotations", nil)
 	if err != nil {
 		t.Fatalf("%s\n", err)
 	}
@@ -41,5 +34,12 @@ func Test_Unmarshal(t *testing.T) {
 		t.Fatalf("%s\n", err)
 	} else {
 		t.Logf("%#v\n", ccfg)
+	}
+
+	var uCfg TestConsulConfig
+	if _, err = GetKVTree(client, "metrilyx/annotations", &uCfg); err != nil {
+		t.Fatalf("%s\n", err)
+	} else {
+		t.Logf("%#v\n", uCfg)
 	}
 }
